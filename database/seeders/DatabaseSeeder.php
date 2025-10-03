@@ -17,23 +17,52 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         User::factory()->create([
-            'name' => 'Barangay Nutrition Scholar',
-            'contact_number' => '09123456789',
-            'email' => 'bns@test.com',
-            'area' => 'Purok 1',
-            'notes' => 'lorem ipsum',
-            'password' => Hash::make("1234"),
-            'role' => 'bns',
+            'username' => 'admin',
+            'name' => 'Admin',
+            'password' => Hash::make("password@123"),
+            'role' => 'admin',
         ]);
 
         User::factory()->create([
-            'name' => 'Barangay Health Worker',
-            'contact_number' => '09987654321',
-            'email' => 'bhw@test.com',
-            'area' => 'Purok 1',
-            'notes' => 'lorem ipsum',
-            'password' => Hash::make("1234"),
+            'username' => 'jenniderdelacruz',
+            'name' => 'Jennifer M. Dela Cruz',
+            'password' => Hash::make("password@123"),
             'role' => 'admin',
+        ]);
+
+        User::factory()->create([
+            'username' => 'ralphearlcollantes',
+            'name' => 'Ralph Earl L. Collantes',
+            'password' => Hash::make("password@123"),
+            'role' => 'user',
+        ]);
+
+        User::factory()->create([
+            'username' => 'eduardstotomas',
+            'name' => 'Eduard A. Sto Tomas',
+            'password' => Hash::make("password@123"),
+            'role' => 'user',
+        ]);
+
+        User::factory()->create([
+            'username' => 'adlringuarte',
+            'name' => 'Aldrin G. Guarte',
+            'password' => Hash::make("password@123"),
+            'role' => 'user',
+        ]);
+
+        User::factory()->create([
+            'username' => 'williedulay',
+            'name' => 'Willie T. Dulay Jr.',
+            'password' => Hash::make("password@123"),
+            'role' => 'user',
+        ]);
+
+        User::factory()->create([
+            'username' => 'johncarlcueva',
+            'name' => 'John Carl C. Cueva',
+            'password' => Hash::make("password@123"),
+            'role' => 'user',
         ]);
     }
 }

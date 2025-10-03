@@ -36,11 +36,11 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|string|email',
+            'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $user = User::where('email', $credentials['email'])->first();
+        $user = User::where('username', $credentials['username'])->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
@@ -48,11 +48,11 @@ class AuthController extends Controller
             ]);
         }
 
-        if($user && $user->status !== "active"){
-            throw ValidationException::withMessages([
-                'name' => ['Inactive Account.'],
-            ]);
-        }
+        // if($user && $user->status !== "active"){
+        //     throw ValidationException::withMessages([
+        //         'name' => ['Inactive Account.'],
+        //     ]);
+        // }
 
         $token = $user->createToken('api_token')->plainTextToken;
 

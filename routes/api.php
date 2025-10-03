@@ -18,11 +18,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
 
-Route::get('/tickets', [TicketController::class, 'index']);
-Route::post('/tickets', [TicketController::class, 'store']);
-Route::patch('/tickets/{ticket}/details', [TicketController::class, 'updateDetails']);
-Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
-Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy']);
+Route::middleware(['auth:sanctum'])->group(function(){
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/tickets', [TicketController::class, 'index']);
+    Route::post('/tickets', [TicketController::class, 'store']);
+    Route::patch('/tickets/{ticket}/details', [TicketController::class, 'updateDetails']);
+    Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
+    Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy']);
+});
+
+Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/test', function(){
     return response()->json([

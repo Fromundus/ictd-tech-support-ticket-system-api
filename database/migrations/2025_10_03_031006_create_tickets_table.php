@@ -13,12 +13,16 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('employee_name');
             $table->string('topic');
             $table->text('description');
             $table->string('it_tech_name')->nullable();
             $table->enum('status', ['New', 'Pending', 'In Progress', 'Resolved'])->default('New');
             $table->timestamp('date_resolved')->nullable();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
