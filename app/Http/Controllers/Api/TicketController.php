@@ -38,7 +38,7 @@ class TicketController extends Controller
             $users = User::where('role', 'user')->get();
             $query = Ticket::query()->orderBy('created_at', 'desc');
 
-            if ($request->has('user_id') && !empty($request->user_id)) {
+            if ($request->has('user_id') && !empty($request->user_id) && $request->user_id != "all") {
                 $query->where('user_id', $request->user_id);
             }
 
