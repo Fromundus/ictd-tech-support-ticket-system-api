@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\TicketExportController;
 use App\Models\Patient;
 use App\Models\PatientRecord;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -27,6 +28,8 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::patch('/tickets/{ticket}/details', [TicketController::class, 'updateDetails']);
     Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy']);
+
+    Route::get('/tickets/export-pdf', [TicketExportController::class, 'exportPdf']);
 });
 
 Route::post('/login', [AuthController::class, 'login']);

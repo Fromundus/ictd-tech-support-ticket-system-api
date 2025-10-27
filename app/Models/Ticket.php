@@ -15,4 +15,10 @@ class Ticket extends Model
         'status',
         'date_resolved',
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'date_resolved' => 'datetime',
+    ];
 }
