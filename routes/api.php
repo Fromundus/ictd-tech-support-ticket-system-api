@@ -24,15 +24,20 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::get('/tickets', [TicketController::class, 'index']);
-    Route::post('/tickets', [TicketController::class, 'store']);
     Route::patch('/tickets/{ticket}/details', [TicketController::class, 'updateDetails']);
     Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy']);
-
+    
     Route::get('/tickets/export-pdf', [TicketExportController::class, 'exportPdf']);
+
+    Route::get('/users', [UserController::class, 'all']);
 });
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/tickets/count', [TicketController::class, 'count']);
+Route::post('/tickets', [TicketController::class, 'store']);
+
+Route::get('/tickets/{uid}', [TicketController::class, 'show']);
 
 Route::get('/test', function(){
     return response()->json([

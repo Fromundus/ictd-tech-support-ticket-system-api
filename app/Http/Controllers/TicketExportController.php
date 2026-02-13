@@ -48,6 +48,7 @@ class TicketExportController extends Controller
         $type = $request->query('type', 'monthly');
 
         $status = $request->query('status', 'all');
+        $tech = $request->query('tech', 'all');
 
         $query = Ticket::query();
 
