@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Services\BroadcastEventService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -107,6 +108,8 @@ class TicketController extends Controller
             'date'          => $data["date"],
         ]);
 
+        BroadcastEventService::signal('tickets');
+
         return response()->json($ticket, 201);
     }
 
@@ -124,6 +127,8 @@ class TicketController extends Controller
 
         $ticket->update($data);
 
+        BroadcastEventService::signal('tickets');
+
         return response()->json($ticket);
     }
 
@@ -140,16 +145,19 @@ class TicketController extends Controller
             'date_resolved' => $status === 'Resolved' ? now() : null,
         ]);
 
+        BroadcastEventService::signal('tickets');
+
         return response()->json($ticket);
     }
 
     public function destroy(Ticket $ticket)
     {
         $ticket->delete();
+
+        BroadcastEventService::signal('tickets');
+
         return response()->json([
             'message' => 'Ticket deleted successfully.'
         ], 200);
     }
-
-
 }
