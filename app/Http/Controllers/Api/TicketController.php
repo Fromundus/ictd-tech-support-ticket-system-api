@@ -118,8 +118,7 @@ class TicketController extends Controller
         $messaging = $factory->createMessaging();
 
         // Send notification to all active tokens
-        $userTokens = User::where('role', 'user')
-            ->whereNotNull('fcm_token')
+        $userTokens = User::whereNotNull('fcm_token')
             ->pluck('fcm_token')
             ->toArray();
 
@@ -185,8 +184,7 @@ class TicketController extends Controller
         $messaging = $factory->createMessaging();
 
         // Send notification to all active tokens
-        $userTokens = User::where('role', 'user')
-            ->whereNotNull('fcm_token')
+        $userTokens = User::whereNotNull('fcm_token')
             ->pluck('fcm_token')
             ->toArray();
 
