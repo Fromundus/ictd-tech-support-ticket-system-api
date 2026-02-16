@@ -8,7 +8,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Kreait\Firebase\Factory;
+use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class UserController extends Controller
 {
@@ -239,4 +242,69 @@ class UserController extends Controller
         return response()->json(['message' => 'Users deleted successfully']);
     }
 
+    // public function fcmToken(Request $request){
+    //     $user = $request->user();
+
+    //     $user->update([
+    //         'fcm_token' => $request->token
+    //     ]);
+
+    //     // Subscribe only if role is user
+    //     if ($user->role === 'user') {
+
+    //     }
+
+    //     return response()->json(['success' => true]);
+    // }
+
+    // public function fcmToken(Request $request)
+    // {
+    //     $user = $request->user();
+
+    //     // Save the token
+    //     $user->update([
+    //         'fcm_token' => $request->token
+    //     ]);
+
+    //     // Subscribe to topic 'users' if role is 'user'
+    //     if ($user->role === 'user' && $user->fcm_token) {
+    //         $factory = (new Factory)
+    //             ->withServiceAccount(storage_path('app/firebase.json'));
+    //         $messaging = $factory->createMessaging();
+
+    //         try {
+    //             $messaging->subscribeToTopic('users', [$user->fcm_token]);
+    //         } catch (\Kreait\Firebase\Exception\MessagingException $e) {
+    //             Log::error('FCM subscribe failed: '.$e->getMessage());
+    //         }
+    //     }
+
+    //     return response()->json(['success' => true]);
+    // }
+
+    public function fcmToken(Request $request)
+    {
+        $user = $request->user();
+
+        // Update or save the token
+        $token = $request->token;
+        $user->update(['fcm_token' => $token]);
+
+        if ($user->role === 'user' && $token) {
+            $factory = (new Factory)
+                ->withServiceAccount(storage_path('app/firebase.json'));
+            $messaging = $factory->createMessaging();
+
+            try {
+                // Subscribe user token to 'users' topic
+                $messaging->subscribeToTopic('users', [$token]);
+            } catch (\Kreait\Firebase\Exception\MessagingException $e) {
+                Log::error('FCM subscribe failed: ' . $e->getMessage());
+            } catch (\Kreait\Firebase\Exception\FirebaseException $e) {
+                Log::error('Firebase error: ' . $e->getMessage());
+            }
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

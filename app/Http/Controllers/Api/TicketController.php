@@ -8,7 +8,11 @@ use App\Models\User;
 use App\Services\BroadcastEventService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 class TicketController extends Controller
 {
@@ -81,7 +85,7 @@ class TicketController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function storeUser(Request $request)
     {
         $data = $request->validate([
             'employee_name' => 'required|string|max:255',
@@ -89,7 +93,7 @@ class TicketController extends Controller
             'uid' => 'nullable|string',
             'topic'         => 'required|string|max:255',
             'description'   => 'required|string',
-            'it_tech_name'  => 'nullable|string|max:255',
+            // 'it_tech_name'  => 'nullable|string|max:255',
             'status'        => ['nullable', Rule::in(['New','Pending','In Progress','Resolved'])],
             'date'          => 'required',
         ]);
@@ -104,9 +108,111 @@ class TicketController extends Controller
             'topic'         => $data['topic'],
             'description'   => $data['description'],
             'it_tech_name'  => $user->name ?? null,
+            'tech_employeeid'  => $user->employeeid ?? null,
             'status'        => $data['status'] ?? 'New',
             'date'          => $data["date"],
         ]);
+
+        $factory = (new Factory)
+        ->withServiceAccount(storage_path('app/firebase.json'));
+        $messaging = $factory->createMessaging();
+
+        // Send notification to all active tokens
+        $userTokens = User::where('role', 'user')
+            ->whereNotNull('fcm_token')
+            ->pluck('fcm_token')
+            ->toArray();
+
+        Log::info($userTokens);
+
+        foreach ($userTokens as $key => $token) {
+            try {
+                $message = CloudMessage::withTarget('token', $token)
+                    ->withNotification(Notification::create(
+                        'New Ticket Created',
+                        'A new support ticket was submitted.'
+                    ));
+
+                $messaging->send($message);
+            } catch (\Kreait\Firebase\Exception\MessagingException $e) {
+                // If token is invalid, remove it from DB
+                if (str_contains($e->getMessage(), 'NotRegistered') || str_contains($e->getMessage(), 'InvalidArgument')) {
+                    User::where('fcm_token', $token)->update(['fcm_token' => null]);
+                    unset($userTokens[$key]);
+                }
+                Log::error('FCM send failed: '.$e->getMessage());
+            } catch (\Kreait\Firebase\Exception\FirebaseException $e) {
+                Log::error('Firebase error: '.$e->getMessage());
+            }
+        }
+
+
+        BroadcastEventService::signal('tickets');
+
+        return response()->json($ticket, 201);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'employee_name' => 'required|string|max:255',
+            'employee_id'   => 'required',
+            'uid' => 'nullable|string',
+            'topic'         => 'required|string|max:255',
+            'description'   => 'required|string',
+            // 'it_tech_name'  => 'nullable|string|max:255',
+            'status'        => ['nullable', Rule::in(['New','Pending','In Progress','Resolved'])],
+            'date'          => 'required',
+        ]);
+
+        $user = $request->user();
+
+        $ticket = Ticket::create([
+            'user_id' => $user->id ?? null,
+            'employee_name' => $data['employee_name'],
+            'requested_by_employeeid' => $data['employee_id'] ?? null,
+            'uid' => $data['uid'] ?? null,
+            'topic'         => $data['topic'],
+            'description'   => $data['description'],
+            'it_tech_name'  => $user->name ?? null,
+            'tech_employeeid'  => $user->employeeid ?? null,
+            'status'        => $data['status'] ?? 'New',
+            'date'          => $data["date"],
+        ]);
+
+        $factory = (new Factory)
+        ->withServiceAccount(storage_path('app/firebase.json'));
+        $messaging = $factory->createMessaging();
+
+        // Send notification to all active tokens
+        $userTokens = User::where('role', 'user')
+            ->whereNotNull('fcm_token')
+            ->pluck('fcm_token')
+            ->toArray();
+
+        Log::info($userTokens);
+
+        foreach ($userTokens as $key => $token) {
+            try {
+                $message = CloudMessage::withTarget('token', $token)
+                    ->withNotification(Notification::create(
+                        'New Ticket Created',
+                        'A new support ticket was submitted.'
+                    ));
+
+                $messaging->send($message);
+            } catch (\Kreait\Firebase\Exception\MessagingException $e) {
+                // If token is invalid, remove it from DB
+                if (str_contains($e->getMessage(), 'NotRegistered') || str_contains($e->getMessage(), 'InvalidArgument')) {
+                    User::where('fcm_token', $token)->update(['fcm_token' => null]);
+                    unset($userTokens[$key]);
+                }
+                Log::error('FCM send failed: '.$e->getMessage());
+            } catch (\Kreait\Firebase\Exception\FirebaseException $e) {
+                Log::error('Firebase error: '.$e->getMessage());
+            }
+        }
+
 
         BroadcastEventService::signal('tickets');
 
