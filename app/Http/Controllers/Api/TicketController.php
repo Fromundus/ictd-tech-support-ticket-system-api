@@ -254,6 +254,22 @@ class TicketController extends Controller
         return response()->json($ticket);
     }
 
+    public function resolveTicket(Request $request, Ticket $ticket)
+    {
+        $validated = $request->validate([
+            'date_resolved' => ['nullable', 'string'],
+        ]);
+
+        $ticket->update([
+            'status' => "Resolved",
+            'date_resolved' => $validated["date_resolved"] ?? now(),
+        ]);
+
+        BroadcastEventService::signal('tickets');
+
+        return response()->json($ticket);
+    }
+
     public function destroy(Ticket $ticket)
     {
         $ticket->delete();

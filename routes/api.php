@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::post('/tickets-user', [TicketController::class, 'storeUser']);
     Route::patch('/tickets/{ticket}/details', [TicketController::class, 'updateDetails']);
     Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
+    Route::put('/tickets/resolve/{ticket}', [TicketController::class, 'resolveTicket']);
     Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy']);
     
     Route::get('/tickets/export-pdf', [TicketExportController::class, 'exportPdf']);
