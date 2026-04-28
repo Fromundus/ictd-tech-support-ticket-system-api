@@ -1,33 +1,45 @@
 <?php
 
-use App\Exports\PatientsExport;
-use App\Exports\RegisteredMembersExport;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\MemberController;
-use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\PatientController;
-use App\Http\Controllers\Api\RegisteredMemberController;
-use App\Http\Controllers\Api\ReportController;
-use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\DeviceController;
+use App\Http\Controllers\Api\DeviceHistoryController;
+use App\Http\Controllers\Api\Payroll\EmployeeController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\TicketExportController;
-use App\Models\Patient;
-use App\Models\PatientRecord;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Maatwebsite\Excel\Facades\Excel;
-
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
-
 
 Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    //devices
+    Route::get('/users', [UserController::class, 'all']);
+    Route::get('/employees', [EmployeeController::class, 'index']);
+    Route::get('/employees/all', [EmployeeController::class, 'all']);
+    Route::get('/employees/search', [EmployeeController::class, 'search']);
+
+    Route::prefix('/devices')->group(function(){
+        // Route::get('/', [DeviceController::class, 'index']);
+        Route::get('/by-type', [DeviceController::class, 'indexByType']);
+        Route::get('/{id}', [DeviceController::class, 'show']);
+        Route::post('/', [DeviceController::class, 'store']);
+        Route::put('/{id}', [DeviceController::class, 'update']);
+        Route::delete('/{id}', [DeviceController::class, 'destroy']);
+    });
+
+    Route::prefix('/histories')->group(function(){
+        Route::post('/', [DeviceHistoryController::class, 'store']);
+        Route::put('/{id}', [DeviceHistoryController::class, 'update']);
+        // Route::delete('/{id}', [DeviceHistoryController::class, 'destroy']);
+    });
+
+    Route::get('/employees/{employeeid}', [EmployeeController::class, 'show']);
+
+    //tickets
     Route::get('/tickets', [TicketController::class, 'index']);
     Route::post('/tickets-user', [TicketController::class, 'storeUser']);
     Route::patch('/tickets/{ticket}/details', [TicketController::class, 'updateDetails']);
@@ -45,6 +57,10 @@ Route::middleware(['auth:sanctum'])->group(function(){
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/tickets/count', [TicketController::class, 'count']);
 Route::post('/tickets', [TicketController::class, 'store']);
+
+Route::prefix('/devices')->group(function(){
+    Route::get('/', [DeviceController::class, 'index']);
+});
 
 Route::get('/tickets/{uid}', [TicketController::class, 'show']);
 

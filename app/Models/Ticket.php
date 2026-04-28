@@ -12,6 +12,7 @@ class Ticket extends Model
         'uid',
         'tech_employeeid',
         'employee_name',
+        'device_id',
         'topic',
         'description',
         'it_tech_name',
@@ -26,4 +27,8 @@ class Ticket extends Model
         'date_resolved' => 'datetime',
         'date' => 'datetime',
     ];
+
+    public function device(){
+        return $this->belongsTo(Device::class);
+    }
 }
