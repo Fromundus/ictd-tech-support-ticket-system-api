@@ -64,7 +64,7 @@ class TicketController extends Controller
 
     public function show(Request $request, $uid)
     {
-        $tickets = Ticket::where('uid', $uid)
+        $tickets = Ticket::with('device')->where('uid', $uid)
             ->orderBy('created_at', 'desc')
             ->get();
 

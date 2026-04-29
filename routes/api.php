@@ -19,7 +19,6 @@ Route::middleware(['auth:sanctum'])->group(function(){
     //devices
     Route::get('/users', [UserController::class, 'all']);
     Route::get('/employees', [EmployeeController::class, 'index']);
-    Route::get('/employees/all', [EmployeeController::class, 'all']);
     Route::get('/employees/search', [EmployeeController::class, 'search']);
 
     Route::prefix('/devices')->group(function(){
@@ -61,6 +60,8 @@ Route::post('/tickets', [TicketController::class, 'store']);
 Route::prefix('/devices')->group(function(){
     Route::get('/', [DeviceController::class, 'index']);
 });
+
+Route::get('/employees-all', [EmployeeController::class, 'all']);
 
 Route::get('/tickets/{uid}', [TicketController::class, 'show']);
 
