@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Device;
+use App\Services\BroadcastEventService;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
@@ -163,6 +164,8 @@ class DeviceController extends Controller
             "created_by_employeeid" => $user->employeeid,
         ]);
 
+        BroadcastEventService::signal('devices');
+
         return response()->json([
             'message' => 'Device created successfully',
             'data' => $device
@@ -221,6 +224,8 @@ class DeviceController extends Controller
             "updated_by_employeeid" => $user->employeeid,
         ]);
 
+        BroadcastEventService::signal('devices');
+
         return response()->json([
             'message' => 'Device updated successfully',
             'data' => $device
@@ -237,6 +242,8 @@ class DeviceController extends Controller
         }
 
         $device->delete();
+
+        BroadcastEventService::signal('devices');
 
         return response()->json([
             'message' => 'Device deleted successfully'
