@@ -114,8 +114,8 @@ class TicketController extends Controller
             $ticket = Ticket::create([
                 'device_id' => $data['device_id'] ?? null,
                 'user_id' => $user->id ?? null,
-                'employee_name' => $device->mr_employee_name ?? $data['employee_name'],
-                'requested_by_employeeid' => $device->mr_employeeid ?? $data['employee_id'] ?? null,
+                'employee_name' => $device->user_employee_name ?? $data['employee_name'],
+                'requested_by_employeeid' => $device->user_employeeid ?? $data['employee_id'] ?? null,
                 'uid' => $data['uid'] ?? null,
                 'topic'         => $data['topic'],
                 'description'   => $data['description'],
@@ -210,8 +210,8 @@ class TicketController extends Controller
             $ticket = Ticket::create([
                 'device_id' => $data['device_id'] ?? null,
                 'user_id' => $user->id ?? null,
-                'employee_name' => $device->mr_employee_name ?? $data['employee_name'],
-                'requested_by_employeeid' => $device->mr_employeeid ?? $data['employee_id'] ?? null,
+                'employee_name' => $device->user_employee_name ?? $data['employee_name'],
+                'requested_by_employeeid' => $device->user_employeeid ?? $data['employee_id'] ?? null,
                 'uid' => $data['uid'] ?? null,
                 'topic'         => $data['topic'],
                 'description'   => $data['description'],
