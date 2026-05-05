@@ -133,12 +133,12 @@ class DeviceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'mr_employeeid' => 'required|integer',
-            'mr_employee_name' => 'required|string',
-            'user_employeeid' => 'required|integer',
-            'user_employee_name' => 'required|string',
+            'mr_employeeid' => 'nullable|integer',
+            'mr_employee_name' => 'nullable|string',
+            'user_employeeid' => 'nullable|integer',
+            'user_employee_name' => 'nullable|string',
             'purchased_at' => 'nullable|string',
-            'name' => 'required|string|unique:devices,name',
+            'name' => 'nullable|string|unique:devices,name',
             'type' => 'required|string',
             'custom_type' => 'nullable|required_if:type,Other|string',
             'brand' => 'nullable|string',
@@ -191,12 +191,12 @@ class DeviceController extends Controller
         }
 
         $validated = $request->validate([
-            'mr_employeeid' => 'required|integer',
-            'mr_employee_name' => 'required|string',
-            'user_employeeid' => 'required|integer',
-            'user_employee_name' => 'required|string',
+            'mr_employeeid' => 'nullable|integer',
+            'mr_employee_name' => 'nullable|string',
+            'user_employeeid' => 'nullable|integer',
+            'user_employee_name' => 'nullable|string',
             'purchased_at' => 'nullable|string',
-            'name' => 'required|string|unique:devices,name,' . $id,
+            'name' => 'nullable|string|unique:devices,name,' . $id,
             'type' => 'required|string',
             'custom_type' => 'nullable|required_if:type,Other|string',
             'brand' => 'nullable|string',
