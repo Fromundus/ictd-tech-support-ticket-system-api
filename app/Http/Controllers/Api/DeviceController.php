@@ -71,6 +71,7 @@ class DeviceController extends Controller
             'Laptop',
             'Printer',
             'Scanner',
+            'Printer w/ Scanner',
             'Monitor',
             'UPS',
             'Speaker',
