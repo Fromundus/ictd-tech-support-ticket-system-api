@@ -18,11 +18,12 @@ Route::middleware(['auth:sanctum'])->group(function(){
 
     //devices
     Route::get('/users', [UserController::class, 'all']);
+    Route::get('/employees-all', [EmployeeController::class, 'all']);
     Route::get('/employees', [EmployeeController::class, 'index']);
     Route::get('/employees/search', [EmployeeController::class, 'search']);
 
     Route::prefix('/devices')->group(function(){
-        // Route::get('/', [DeviceController::class, 'index']);
+        Route::get('/', [DeviceController::class, 'index']);
         Route::get('/by-type', [DeviceController::class, 'indexByType']);
         Route::get('/{id}', [DeviceController::class, 'show']);
         Route::post('/', [DeviceController::class, 'store']);
@@ -54,16 +55,14 @@ Route::middleware(['auth:sanctum'])->group(function(){
 });
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/tickets/count', [TicketController::class, 'count']);
-Route::post('/tickets', [TicketController::class, 'store']);
+// Route::get('/tickets/count', [TicketController::class, 'count']);
+// Route::post('/tickets', [TicketController::class, 'store']);
 
-Route::prefix('/devices')->group(function(){
-    Route::get('/', [DeviceController::class, 'index']);
-});
+// Route::prefix('/devices')->group(function(){
+//     Route::get('/', [DeviceController::class, 'index']);
+// });
 
-Route::get('/employees-all', [EmployeeController::class, 'all']);
-
-Route::get('/tickets/{uid}', [TicketController::class, 'show']);
+// Route::get('/tickets/{uid}', [TicketController::class, 'show']);
 
 Route::get('/test', function(){
     return response()->json([
